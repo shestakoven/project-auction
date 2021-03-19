@@ -1,0 +1,48 @@
+# web framework
+django>=3.0.3
+
+# postgresql adapter
+psycopg2-binary
+
+# task execution tool
+invoke
+
+# library to create tree structure for Category and Comment models
+django-mptt
+
+# requires for ImageField in django models
+pillow==8.1.0
+
+# for sorting objects in the admin interface
+django-admin-sortable2
+
+# authentication
+django-allauth==0.44.0
+
+# pretty view for forms
+django-crispy-forms==1.11.1
+
+# for better use images in models
+django-imagekit==4.0.2
+
+# for email styles
+django-inlinecss==0.3.0
+
+# for Dialog model
+django-model-utils==4.1.1
+
+# automatic filling of the category field when creating a lot
+django-autocomplete-light
+
+# api
+djangorestframework
+
+# for notifications and checks finished date of lots
+django-celery-beat==2.2.0
+redis==3.5.3
+
+# generate qr-code on lot page
+django-qr-code
+
+# for lot description
+django-tinymce

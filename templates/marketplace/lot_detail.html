@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load qr_code %}
+{% block title %} PyCampAu Lot {% endblock %}
+
+{% block head_links %}
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <link rel="stylesheet" href="{% static 'marketplace/css/comments.css' %}"/>
+
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+  <script src="{% static 'marketplace/scripts/add_comments.js' %}"></script>
+{% endblock %}
+
+{% block navbar %}
+{% include 'default_navbar.html' %}
+{% endblock %}
+
+{% block content %}
+  <div class="container mt-1">
+    <div class="row">
+      <div class="col">
+        <div class="card mb-4">
+
+          {% if lot.is_active %}
+            <div class="card-header text-white bg-success">
+              <h3 class="text-center">Lot is active</h3>
+            </div>
+          {% else %}
+            <div class="card-header text-white bg-secondary ">
+              <h3 class="text-center">Trading is over</h3>
+            </div>
+          {% endif %}
+
+          <div class="card-body">
+            <h2 class="card-title"><a class="link-dark"
+              href="{% url 'lot-detail' lot.id as lot_url%}">{{ lot.title }}</a></h2>
+            <a href="{{ lot.category.get_absolute_url }}">
+              <h6 class="card-subtitle mb-2 text-muted">{{ lot.category }}</h6>
+            </a>
+
+            {% include 'marketplace/images_carousel.html' with lot=lot %}
+
+            {{ lot.description|safe }}
+
+            <h2 class="card-text"><span class="badge bg-warning text-dark"> Blitz price: {{ lot.blitz_price }}</span></h2>
+
+            <h2 class="card-text">
+              <span class="badge bg-primary text-light">
+
+                {% if lot.bids.count > 0 %}
+                  Current price:
+                {% else %}
+                  Start price:
+                {% endif %}
+
+                {{ lot.current_price }}
+              </span>
+            </h2>
+
+            <h4 class="card-text">
+              <span class="badge bg-secondary text-light">
+                {% if lot.is_active %}
+                  Time to left: {{ lot.left_time }} (
+                  {{ lot.finished_at|date:"d N Y H:i" }})
+                {% else %}
+                  Time to left: 0
+                {% endif %}
+              </span>
+            </h4>
+            <span hidden id="lot_id">{{ lot.id }}</span>
+            <img src="{% qr_url_from_text request.build_absolute_uri %}">
+          </div>
+          <div class="card-footer bg-transparent" style="width: 100%; text-align: right">
+            <span style="float: left"><small>Owner: <a href="{% url 'other-account' lot.owner.username %}">{{ lot.owner.username }}</a></small></span>
+            {% if lot.is_private %}
+              <small>Lot is private</small>
+            {% else %}
+              <small>Lot is public</small>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card mb-4">
+          <div class="card-header">
+            <h3 class="text-center">Bids ({{ lot.bids_count }})</h3>
+          </div>
+          <div class="card-body p-0">
+            <div class="container p-0">
+              <table class="table table-striped m-0">
+                <thead>
+                  <tr>
+                    <th scope="col" class="text-center">Price</th>
+                    <th scope="col" class="text-center">User</th>
+                    <th scope="col" class="text-center">Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for bid in lot.bids.all %}
+                    <tr>
+                      <th scope="row" class="text-center">{{ bid.price }}</th>
+                      <td class="text-center"><a href="{% url 'other-account' bid.user.username %}">{{ bid.user.username }}</a></td>
+                      <td class="text-center">{{ bid.date|date:"d N Y H:i" }}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        {% if lot.is_active %}
+          <div class="card mb-4">
+            <div class="card-header">Make a bid</div>
+            <div class="card-body">
+              <form action="{% url 'lot-detail' pk=lot.id %}" method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                  {{ bid_form }}
+                </div>
+                <input class="btn btn-primary" type="submit" value="Make a bid">
+              </form>
+            </div>
+          </div>
+        {% endif %}
+
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-6">
+        {% load mptt_tags %}
+
+        <div id="comments">
+          <h4>Comments {{ lot.comments.count }}</h4>
+          {% recursetree lot.comments.all %}
+
+            <div class="card my-2 p-2" id="{{ node.id }}">
+              <div class="card-body">
+                <div class="d-flex justify-content-between"><a href="{% url 'other-account' node.user.username %}">{{ node.user.username }}</a><div></div>{{ node.created_at|date:"d N Y H:i" }}</div>
+                <p class="card-text">{{ node.text }}</p>
+
+                {% if node.parent.user.username %}
+                <p>in response to <a href="{% url 'other-account' node.parent.user.username %}">{{ node.parent.user.username }}</a></p>
+                {% endif %}
+
+                <hr />
+                <button type="button" class="btn btn-primary" onclick="addComment({{ node.id }})">Reply</button>
+              </div>
+            </div>
+
+          {% if not node.is_leaf_node %}
+            <div
+              {% if node.level < 1 %}
+                class="children pl-2 pl-md-5"
+              {% endif %}
+            >
+              {{ children }}
+            </div>
+          {% endif %}
+
+          {% endrecursetree %}
+        </div>
+
+        {% if lot.is_active %}
+          <script>addComment("comments")</script>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+{% endblock %}

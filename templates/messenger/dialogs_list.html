@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load get_avatar %}
+
+{% load get_opponent %}
+{% load unread_msgs_from_dialog %}
+
+{% block title %}Dialogs{% endblock %}
+{% block navbar %}
+  {% include 'default_navbar.html' %}
+{% endblock %}
+
+{% block content %}
+  <div class="container" style="width: 50%;">
+    <ul class="list-group">
+      {% for dialog in dialog_list %}
+        {% get_opponent dialog as opponent %}
+        <a href="{% url 'dialog-with' opponent.username %}" class="list-group-item list-group-item-action" style="text-decoration: none">
+            <div class="row align-items-center">
+              <div class="col-1">
+                <img src="{% users_avatar opponent %}" alt="avatar" class="rounded-pill" style="width: 50px">
+              </div>
+              <div class="col">
+                <div>
+                  {% if opponent.get_full_name %}
+                    <h4>{{ opponent.get_full_name }}</h4>
+                  {% else %}
+                    <h4>{{ opponent.username }}</h4>
+                  {% endif %}
+                </div>
+                <div>
+                  <span>{{ dialog.messages.last.message|truncatechars:"100" }}</span>
+                </div>
+              </div>
+            <div class="col-1">
+              <span class="badge bg-primary rounded-pill">{% get_unread_msgs_count dialog opponent %}</span>
+            </div>
+            </div>
+        </a>
+      {% empty %}
+        <h3>You have no messages yet</h3>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock %}

@@ -1,0 +1,8 @@
+from .base import *
+
+ENVIRONMENT = 'local'
+
+CELERY_TASK_ALWAYS_EAGER = True
+CELERY_TASK_DEFAULT_QUEUE = f'auction-{ENVIRONMENT}'
+CELERY_BROKER = 'amqp://guest@localhost'
+CELERY_BACKEND = 'redis://localhost'

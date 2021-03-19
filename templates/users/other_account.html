@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% load static %}
+{% load get_avatar %}
+
+{% load i18n %}
+
+{% block head_links %}{% endblock %}
+
+{% block title %}{% trans "Profile" %} {% endblock %}
+
+{% block navbar %}
+  {% include 'default_navbar.html' %}
+{% endblock %}
+
+{% block content %}
+
+    <div class="container">
+        <div class="row align-items-start">
+            <div class="col" style="margin-top: 2.5rem">
+                <div class="card" style="width: 20rem;">
+                    <img class="card-img-top" src="{% users_avatar object %}" alt="avatar">
+                    <div class="card-body">
+                        {% if object.first_name %}
+                            <h2 class="card-title">{{ object.first_name }} {{ object.last_name }}</h2>
+                        {% else %}
+                            <h2 class="card-title">{{ object.username }} </h2>
+                        {% endif %}
+
+                        <p class="card-text">Username: {{ object.username }}</p>
+                        <p class="card-text">Email: {{ object.email }}</p>
+                        <p class="card-text">Phone: {{ object.phone }}</p>
+                        <a href="{% url 'dialog-with' object.username %}">
+                            <button class="btn btn-outline-primary" style="width: 100%">Send message</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!---------------------- lots --------------------------->
+            <div class="col">
+                <h3>User's lots</h3>
+                {% if not user_lots %}
+                    This user has no lots yet
+                {% endif %}
+                {% for lot in user_lots %}
+                  <a class="link-dark" href="{% url 'lot-detail' lot.id %}">
+                    <div class="card" style="width: 20rem; margin-bottom: 20px">
+                        <img src="{{ lot.images.first.image.url }}" class="card-img-top" alt="Main picture">
+                        <div class="card-body">
+                            {% if lot.is_active %}
+                                <h5 class="card-title" style="background-color: #0aac47">{{ lot.title }}</h5>
+                            {% else %}
+                                <h5 class="card-title" style="background-color: #808080">{{ lot.title }}</h5>
+                            {% endif %}
+                            <p class="card-text">{{ lot.description|truncatechars_html:50|safe }}</p>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Blitz price: {{ lot.blitz_price }}</li>
+                            <li class="list-group-item">Current price: {{ lot.current_price }}</li>
+                            <li class="list-group-item">Finish: {{ lot.finished_at }}</li>
+                        </ul>
+                        <div class="card-body">
+                            {% if lot.comments.last %}
+                                <p class="card-text">Last comment: {{ lot.comments.last.text|slice:":50" }}</p>
+                            {% else %}
+                                <p>No comments yet</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                  </a>
+                {% endfor %}
+            </div>
+            <!------------------- bids ---------------------->
+            <div class="col">
+                <h3>User's bids</h3>
+                {% if not bidded_lots %}
+                    This user has not bids yet
+                {% endif %}
+                {% for lot in bidded_lots %}
+                    <div class="card" style="width: 20rem; margin-bottom: 20px">
+                        <img src="{{ lot.images.first.image.url }}" class="card-img-top" alt="Main picture">
+                        <div class="card-body">
+                            {% if lot.is_active %}
+                                <h5 class="card-title" style="background-color: #0aac47">{{ lot.title }}</h5>
+                            {% else %}
+                                <h5 class="card-title" style="background-color: #808080">{{ lot.title }}</h5>
+                            {% endif %}
+                            <p class="card-text">{{ lot.description|truncatechars_html:50|safe }}</p>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Blitz price: {{ lot.blitz_price }}</li>
+                            <li class="list-group-item">Current price: {{ lot.current_price }}</li>
+                            <li class="list-group-item">Finish: {{ lot.finished_at }}</li>
+                        </ul>
+                        <div class="card-body">
+                            <p class="card-text">Bid: {{ lot.bids__price__max }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

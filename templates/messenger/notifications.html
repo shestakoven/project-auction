@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load get_notify_icon %}
+{% block title %}Notifications{% endblock %}
+{% block navbar %}
+  {% include 'default_navbar.html' %}
+{% endblock %}
+
+{% block content %}
+  <div class="container" style="width: 50%;">
+    <ul class="list-group">
+      {% for message in message_list %}
+        <div class="list-group-item" style="background-color: {% if message.is_read %}lightgray{% endif %}">
+          <div class="row align-items-center">
+            <div class="col-1">
+              {% get_icon message.type as icon %}
+              {% include icon %}
+            </div>
+            <div class="col">
+              <div>
+                <h4>{{ message.get_type_display }}</h4>
+              </div>
+              <div>
+                <span>{{ message.message|safe }}</span>
+              </div>
+            </div>
+            <form method="post" action="{% url 'delete-notification' %}" class="col-1">
+              {% csrf_token %}
+              <input name="message_id" value="{{ message.pk }}" hidden>
+              <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+            <form method="post" action="{% url 'mark-as-read' %}" class="col-2">
+              {% csrf_token %}
+              <input name="message_id" value="{{ message.pk }}" hidden>
+              <button type="submit" class="btn btn-success">Mark as read</button>
+            </form>
+          </div>
+        </div>
+      {% empty %}
+        <h3>You have no notifications yet</h3>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock %}

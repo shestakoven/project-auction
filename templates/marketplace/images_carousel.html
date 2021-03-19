@@ -1,0 +1,31 @@
+<div id="carousel-example-1z" class="carousel slide" data-bs-ride="carousel">
+
+  <div class="carousel-inner" role="listbox">
+    {% for image in lot.images.all %}
+      <div
+        class="carousel-item {% if forloop.counter0 == 0 %} active {% endif %}">
+        <img class="d-block w-100" src="{{ image.image.url }}"  alt="First slide">
+      </div>
+    {% endfor %}
+  </div>
+
+  {% if lot.images.count > 1 %}
+    <ol class="carousel-indicators">
+      {% for p in lot.images.all %}
+        <li data-target="#carousel-example-1z"
+            data-slide-to="{{ forloop.counter0 }}"
+            class="{% if forloop.counter0 == 0 %} active {% endif %}"></li>
+      {% endfor %}
+    </ol>
+
+    <a class="carousel-control-prev" href="#carousel-example-1z"
+       role="button" data-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    </a>
+    <a class="carousel-control-next" href="#carousel-example-1z"
+       role="button" data-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    </a>
+  {% endif %}
+
+</div>

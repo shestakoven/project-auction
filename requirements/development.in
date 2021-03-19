@@ -1,0 +1,31 @@
+-r base.in
+
+# powerful interactive python shell
+ipython
+
+# console debugger
+ipdb
+
+# tools to keep packages fresh
+pip-tools
+
+# order imports
+isort
+
+# checks code style by pep8
+flake8
+
+# for tests
+pytest
+
+# to work with .xls files
+xlrd
+
+# create instances to db and help with tests
+factory-boy
+
+# plugin for pytest that provides a set of useful tools for testing Django
+pytest-django
+
+# to see the number of requests and other information in the browser
+django-debug-toolbar

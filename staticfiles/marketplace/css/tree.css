@@ -1,0 +1,81 @@
+.Container {
+    padding: 0;
+    margin: 0;
+}
+
+.Container li {
+    list-style-type: none;
+}
+
+/* indent for all tree children excepts root */
+.Node {
+    background-position : top left;
+    background-repeat : repeat-y;
+    margin-left: 18px;
+    zoom: 1;
+}
+
+.IsRoot {
+    margin-left: 0;
+}
+
+/* left vertical line (grid) for all nodes */
+.IsLast {
+    background-repeat : no-repeat;
+}
+
+.ExpandOpen .Expand {
+    background: url("../svg/caret-down-fill.svg");
+    background-position: bottom;
+    background-repeat : no-repeat;
+}
+
+/* closed is higher priority than open */
+.ExpandClosed .Expand{
+    background: url("../svg/caret-right-fill.svg");
+    background-position: bottom;
+    background-repeat : no-repeat;
+}
+
+/* highest priority */
+.ExpandLeaf .Expand {
+    background: url("");
+    background-repeat : no-repeat;
+}
+
+.Content {
+    min-height: 18px;
+    margin-left:18px;
+}
+
+* html .Content {
+    height: 18px;
+}
+
+.Expand {
+    width: 18px;
+    height: 18px;
+    float: left;
+}
+
+.ExpandOpen .Container {
+        display: block;
+}
+
+.ExpandClosed .Container {
+        display: none;
+}
+
+.ExpandOpen .Expand, .ExpandClosed .Expand {
+        cursor: pointer;
+}
+.ExpandLeaf .Expand {
+        cursor: auto;
+}
+
+.ExpandLoading   {
+    width: 18px;
+    height: 18px;
+    float: left;
+    background-repeat: no-repeat;
+}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load get_avatar %}
+
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block title %}{% trans "Edit profile" %} {% endblock %}
+
+{% block head_links %}
+{% endblock %}
+
+{% block navbar %}
+  {% include 'default_navbar.html' %}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row align-items-start">
+                <div class="col">
+                    <h3>Edit profile</h3>
+                    <div class="card" style="width: 20rem;">
+                        <img class="card-img-top" src="{% users_avatar object %}" alt="avatar">
+                        <div class="card-body">
+                            <div class="col">
+                                <p>Change avatar:</p>
+                                <input type="file" name="avatar" accept="image/*" id="id_avatar">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-7">
+                    <h3>Personal info</h3>
+                    <p>{{ form.first_name|as_crispy_field }}</p>
+                    <p>{{ form.last_name|as_crispy_field }}</p>
+                    <p>{{ form.username|as_crispy_field }}</p>
+                    <p>{{ form.phone|as_crispy_field }}</p>
+                    <h3>Password</h3>
+                    <a class="btn btn-outline-secondary" href="{% url 'account_change_password' %}">Change
+                        password</a><br><br>
+                    <h3>Email</h3>
+                    <a class="btn btn-outline-secondary" href="{% url 'account_email' %}">Change email</a>
+                    <br><br>
+                    <button class="btn btn-warning" type="reset">Reset</button>
+                    <button type="submit" class="btn btn-primary mx-1">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}

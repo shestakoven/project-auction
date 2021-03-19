@@ -1,0 +1,10 @@
+{% extends 'account/email/base_email.html' %}
+{% block title %}<title>Registration confirmation email</title>{% endblock %}
+
+{% block message %}
+Please confirm your email address by clicking the link below.
+{% endblock %}
+
+{% block link %}
+<a href="{{ activate_url }}"  class="btn-primary" itemprop="url">Confirm email address</a>
+{% endblock %}
